@@ -12,6 +12,55 @@
 const BASE = 'https://cf-duals-backend-1.onrender.com/api';
 
 // ── Internal fetch wrapper ────────────────────────────────────────────────────
+const api = {
+    // Helper to get the token for secure requests
+    getAuthHeader: () => {
+        const token = sessionStorage.getItem('token');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
+    },
+
+    // --- Authentication ---
+    register: async (handle, password) => {
+        const res = await fetch(`${BASE_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ handle, password })
+        });
+        return res.json();
+    },
+
+    login: async (handle, password) => {
+        const res = await fetch(`${BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ handle, password })
+        });
+        return res.json();
+    },
+
+    // --- Protected Dashboard Data ---
+    getStats: async () => {
+        const res = await fetch(`${BASE_URL}/auth/stats`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                ...api.getAuthHeader() // Attaches the JWT lock-and-key
+            }
+        });
+        return res.json();
+    },
+
+    getHistory: async () => {
+        const res = await fetch(`${BASE_URL}/auth/history`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                ...api.getAuthHeader() 
+            }
+        });
+        return res.json();
+    }
+  };
 
 async function request(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };

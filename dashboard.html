@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CF Duels - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-header">
+        <h2>Welcome, <span id="user-handle"></span></h2>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <h3>Total Matches</h3>
+            <p id="total-matches">--</p>
+        </div>
+        <div class="stat-box">
+            <h3>Total Wins</h3>
+            <p id="total-wins">--</p>
+        </div>
+        <div class="stat-box">
+            <h3>Rating</h3>
+            <p id="current-rating">--</p>
+        </div>
+    </div>
+
+    <div class="matchmaking-container">
+        <button onclick="createRoom()">Host a Duel</button>
+        <input type="text" id="room-code-input" placeholder="Room Code">
+        <button onclick="joinRoom()">Join Duel</button>
+    </div>
+
+    <div class="history-container">
+        <h3>Match History</h3>
+        <ul id="history-list">
+            </ul>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
