@@ -1,4 +1,7 @@
 // Run this immediately when the dashboard loads
+
+import { createRoom, joinRoom, getRoom } from './api.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. The Security Check
     const token = sessionStorage.getItem('token');
