@@ -9,7 +9,7 @@
  *   as  Authorization: Bearer <token>  on every request.
  */
 
-const BASE = 'https://cf-duals-backend-1.onrender.com/api';
+const BASE_URL = 'https://cf-duals-backend-1.onrender.com/api';
 
 // ── Internal fetch wrapper ────────────────────────────────────────────────────
 const api = {
