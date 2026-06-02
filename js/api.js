@@ -68,7 +68,7 @@ async function request(method, path, body = null) {
   const token = sessionStorage.getItem('cf_token');
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${BASE_URL}${path}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
