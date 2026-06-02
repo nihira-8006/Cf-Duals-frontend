@@ -1,4 +1,6 @@
 let isLoginMode = true;
+document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
+document.getElementById('tab-register').addEventListener('click', () => switchTab('register'));
 
 function switchTab(mode) {
     isLoginMode = mode === 'login';
