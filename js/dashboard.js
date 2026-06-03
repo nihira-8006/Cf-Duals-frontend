@@ -1,6 +1,23 @@
 // Run this immediately when the dashboard loads
 
 import { createRoom, joinRoom, getRoom } from './api.js';
+document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+});
+
+document.getElementById('create-room-btn').addEventListener('click', () => {
+    window.location.href = 'create.html';
+});
+
+document.getElementById('join-room-btn').addEventListener('click', () => {
+    const code = document.getElementById('room-code-input').value.trim();
+    if (code) {
+        window.location.href = `join.html?code=${code}`;
+    } else {
+        alert('Please enter a valid room code.');
+    }
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. The Security Check

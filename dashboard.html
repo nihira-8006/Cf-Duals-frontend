@@ -9,7 +9,7 @@
 <body>
     <div class="dashboard-header">
         <h2>Welcome, <span id="user-handle"></span></h2>
-        <button onclick="logout()">Logout</button>
+        <button id="logout-btn">Logout</button>
     </div>
 
     <div class="stats-container">
@@ -28,9 +28,9 @@
     </div>
 
     <div class="matchmaking-container">
-        <button onclick="createRoom()">Host a Duel</button>
+        <button id="create-room-btn"Host a Duel</button>
         <input type="text" id="room-code-input" placeholder="Room Code">
-        <button onclick="joinRoom()">Join Duel</button>
+        <button id="join-room-btn">Join Duel</button>
     </div>
 
     <div class="history-container">
@@ -39,7 +39,7 @@
             </ul>
     </div>
 
-    <script src="js/api.js"></script>
+   
     <script src="js/dashboard.js"></script>
 </body>
 </html>
