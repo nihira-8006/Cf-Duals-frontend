@@ -22,9 +22,9 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
     try {
         let response;
         if (isLoginMode) {
-            response = await api.login(handle, password);
+            response = await login(handle, password);
         } else {
-            response = await api.register(handle, password);
+            response = await register(handle, password);
         }
 
         if (response.error) {
