@@ -41,6 +41,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
         window.location.href = 'dashboard.html';
 
     } catch (error) {
+        console.log('REAL ERROR:', error);
         errorEl.innerText = 'Failed to connect to the server.';
         errorEl.style.display = 'block';
     }
