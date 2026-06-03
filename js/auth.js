@@ -1,4 +1,5 @@
 import { createRoom, joinRoom, getRoom } from './api.js';
+import { login, register } from './api.js';
 let isLoginMode = true;
 document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
 document.getElementById('tab-register').addEventListener('click', () => switchTab('register'));

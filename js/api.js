@@ -114,3 +114,7 @@ export async function joinRoom({ handle, roomCode }) {
 export async function getRoom(roomCode) {
   return request('GET', `/rooms/${roomCode}`);
 }
+
+
+export const login    = (handle, password) => api.login(handle, password);
+export const register = (handle, password) => api.register(handle, password);
