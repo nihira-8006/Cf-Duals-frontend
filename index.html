@@ -7,6 +7,11 @@
  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+    <script>
+    if (localStorage.getItem('token')) {
+      window.location.href = 'dashboard.html';
+    }
+  </script>
     <div class="auth-container">
         <h1>Codeforces Duels</h1>
         
