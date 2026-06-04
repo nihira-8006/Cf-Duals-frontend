@@ -494,7 +494,7 @@
     import { createRoom } from '/js/api.js';
 
     const form      = document.getElementById('create-form');
-    const handleEl  = document.getElementById('handle');
+    const handleEl  = await localStorage.getItem('handle');
     const handleErr = document.getElementById('handle-error');
     const submitBtn = document.getElementById('submit-btn');
     const errBanner = document.getElementById('error-banner');
