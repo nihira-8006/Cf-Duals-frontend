@@ -1,70 +1,38 @@
 /**
  * api.js
  * Centralised REST layer for CF Duels.
- * All fetch() calls live here — no raw fetch() anywhere else.
  *
- * Auth:
- *   Backend returns sessionToken on create/join.
- *   We store it as cf_token in sessionStorage and attach it
- *   as  Authorization: Bearer <token>  on every request.
+ * Two separate tokens:
+ *  - 'token'    → JWT returned by /auth/login or /auth/register.
+ *                 Identifies the user. Used for /auth/stats, /auth/history.
+ *  - 'cf_token' → sessionToken returned by /rooms/create or /rooms/join.
+ *                 Scoped to the current room session. Used for room endpoints.
  */
 
 const BASE_URL = 'https://cf-duals-backend-1.onrender.com/api';
 
-// ── Internal fetch wrapper ────────────────────────────────────────────────────
-const api = {
-    // Helper to get the token for secure requests
-    getAuthHeader: () => {
-        const token = sessionStorage.getItem('token');
-        return token ? { 'Authorization': `Bearer ${token}` } : {};
-    },
+// ── Internal helpers ──────────────────────────────────────────────────────────
 
-    // --- Authentication ---
-    register: async (handle, password) => {
-        const res = await fetch(`${BASE_URL}/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ handle, password })
-        });
-        return res.json();
-    },
-
-    login: async (handle, password) => {
-        const res = await fetch(`${BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ handle, password })
-        });
-        return res.json();
-    },
-
-    // --- Protected Dashboard Data ---
-    getStats: async () => {
-        const res = await fetch(`${BASE_URL}/auth/stats`, {
-            method: 'GET',
-            headers: { 
-                'Content-Type': 'application/json',
-                ...api.getAuthHeader() // Attaches the JWT lock-and-key
-            }
-        });
-        return res.json();
-    },
-
-    getHistory: async () => {
-        const res = await fetch(`${BASE_URL}/auth/history`, {
-            method: 'GET',
-            headers: { 
-                'Content-Type': 'application/json',
-                ...api.getAuthHeader() 
-            }
-        });
-        return res.json();
-    }
-  };
-
-async function request(method, path, body = null) {
+/** Auth requests — attaches the user JWT ('token') */
+async function authRequest(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };
+  const token = sessionStorage.getItem('token');
+  if (token) headers['Authorization'] = `Bearer ${token}`;
 
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
+  return data;
+}
+
+/** Room requests — attaches the room session token ('cf_token') */
+async function roomRequest(method, path, body = null) {
+  const headers = { 'Content-Type': 'application/json' };
   const token = sessionStorage.getItem('cf_token');
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -75,12 +43,54 @@ async function request(method, path, body = null) {
   });
 
   const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data?.error || `Request failed (${res.status})`);
-  }
-
+  if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
   return data;
+}
+
+// ── Auth endpoints ────────────────────────────────────────────────────────────
+
+/**
+ * Register a new user.
+ * Backend returns: { token, handle, ... }
+ * Stores JWT as 'token'.
+ */
+export async function register(handle, password) {
+  const data = await authRequest('POST', '/auth/register', { handle, password });
+  if (data.token) {
+    sessionStorage.setItem('token', data.token);
+    sessionStorage.setItem('handle', handle);
+  }
+  return data;
+}
+
+/**
+ * Log in an existing user.
+ * Backend returns: { token, handle, ... }
+ * Stores JWT as 'token'.
+ */
+export async function login(handle, password) {
+  const data = await authRequest('POST', '/auth/login', { handle, password });
+  if (data.token) {
+    sessionStorage.setItem('token', data.token);
+    sessionStorage.setItem('handle', handle);
+  }
+  return data;
+}
+
+/**
+ * Get the logged-in user's stats.
+ * Returns: { total_matches, total_wins, current_rating }
+ */
+export async function getStats() {
+  return authRequest('GET', '/auth/stats');
+}
+
+/**
+ * Get the logged-in user's match history.
+ * Returns: { history: [{ opponent_handle, problem_name, problem_rating, outcome, created_at }] }
+ */
+export async function getHistory() {
+  return authRequest('GET', '/auth/history');
 }
 
 // ── Room endpoints ────────────────────────────────────────────────────────────
@@ -88,10 +98,10 @@ async function request(method, path, body = null) {
 /**
  * Create a new duel room.
  * Backend returns: { roomId, roomCode, sessionToken }
- * FIX: backend key is sessionToken, not token.
+ * Stores room session token as 'cf_token'.
  */
 export async function createRoom({ handle, rating }) {
-  const data = await request('POST', '/rooms/create', { handle, rating });
+  const data = await roomRequest('POST', '/rooms/create', { handle, rating });
   if (data.sessionToken) sessionStorage.setItem('cf_token', data.sessionToken);
   return data;
 }
@@ -99,22 +109,18 @@ export async function createRoom({ handle, rating }) {
 /**
  * Join an existing duel room.
  * Backend returns: { roomId, participants, sessionToken, status }
+ * Stores room session token as 'cf_token'.
  */
 export async function joinRoom({ handle, roomCode }) {
-  const data = await request('POST', '/rooms/join', { handle, roomCode });
+  const data = await roomRequest('POST', '/rooms/join', { handle, roomCode });
   if (data.sessionToken) sessionStorage.setItem('cf_token', data.sessionToken);
   return data;
 }
 
 /**
- * Rehydrate arena state on load or refresh.
- * Uses roomCode — getRoomStatus service queries by code.
+ * Rehydrate arena state on page load or refresh.
  * Returns: { roomId, roomCode, status, participants, problem?, winner? }
  */
 export async function getRoom(roomCode) {
-  return request('GET', `/rooms/${roomCode}`);
+  return roomRequest('GET', `/rooms/${roomCode}`);
 }
-
-
-export const login    = (handle, password) => api.login(handle, password);
-export const register = (handle, password) => api.register(handle, password);

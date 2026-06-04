@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CF Duels - Dashboard</title>
- <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
     <div class="dashboard-header">
@@ -28,18 +28,19 @@
     </div>
 
     <div class="matchmaking-container">
-        <button id="create-room-btn"Host a Duel</button>
+        <!-- FIX: was missing the closing `>` after the id attribute,
+             breaking the entire DOM from this point downward -->
+        <button id="create-room-btn">Host a Duel</button>
         <input type="text" id="room-code-input" placeholder="Room Code">
         <button id="join-room-btn">Join Duel</button>
     </div>
 
     <div class="history-container">
         <h3>Match History</h3>
-        <ul id="history-list">
-            </ul>
+        <ul id="history-list"></ul>
     </div>
 
-   
-    <script src="js/dashboard.js"></script>
+    <!-- FIX: type="module" is required so ES module imports in dashboard.js work -->
+    <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
