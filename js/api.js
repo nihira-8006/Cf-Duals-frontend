@@ -4,16 +4,18 @@
  *
  * Two separate tokens:
  *  - 'token'    → JWT returned by /auth/login or /auth/register.
- *                 Identifies the user. Used for /auth/stats, /auth/history.
+ *                 Stored in localStorage so it persists across tabs/sessions
+ *                 (stays valid for 5 days, matching the JWT expiry on the backend).
  *  - 'cf_token' → sessionToken returned by /rooms/create or /rooms/join.
- *                 Scoped to the current room session. Used for room endpoints.
+ *                 Stored in sessionStorage — intentionally wiped when tab closes,
+ *                 since a room session should not survive past the browser session.
  */
 
 const BASE_URL = 'https://cf-duals-backend-1.onrender.com/api';
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
-/** Auth requests — attaches the user JWT ('token') */
+/** Auth requests — reads JWT from localStorage */
 async function authRequest(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };
   const token = localStorage.getItem('token');
@@ -30,10 +32,10 @@ async function authRequest(method, path, body = null) {
   return data;
 }
 
-/** Room requests — attaches the room session token ('cf_token') */
+/** Room requests — reads room session token from sessionStorage */
 async function roomRequest(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };
-  const token = localStorage.getItem('cf_token');
+  const token = sessionStorage.getItem('cf_token');
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -52,7 +54,7 @@ async function roomRequest(method, path, body = null) {
 /**
  * Register a new user.
  * Backend returns: { token, handle, ... }
- * Stores JWT as 'token'.
+ * Stores JWT in localStorage for persistence across sessions.
  */
 export async function register(handle, password) {
   const data = await authRequest('POST', '/auth/register', { handle, password });
@@ -66,7 +68,7 @@ export async function register(handle, password) {
 /**
  * Log in an existing user.
  * Backend returns: { token, handle, ... }
- * Stores JWT as 'token'.
+ * Stores JWT in localStorage for persistence across sessions.
  */
 export async function login(handle, password) {
   const data = await authRequest('POST', '/auth/login', { handle, password });
@@ -98,7 +100,7 @@ export async function getHistory() {
 /**
  * Create a new duel room.
  * Backend returns: { roomId, roomCode, sessionToken }
- * Stores room session token as 'cf_token'.
+ * Stores room session token in sessionStorage (tab-scoped).
  */
 export async function createRoom({ handle, rating }) {
   const data = await roomRequest('POST', '/rooms/create', { handle, rating });
@@ -109,7 +111,7 @@ export async function createRoom({ handle, rating }) {
 /**
  * Join an existing duel room.
  * Backend returns: { roomId, participants, sessionToken, status }
- * Stores room session token as 'cf_token'.
+ * Stores room session token in sessionStorage (tab-scoped).
  */
 export async function joinRoom({ handle, roomCode }) {
   const data = await roomRequest('POST', '/rooms/join', { handle, roomCode });

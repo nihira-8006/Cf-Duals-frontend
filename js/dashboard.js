@@ -1,9 +1,8 @@
 /**
  * dashboard.js
  *
- * Auth guard checks 'token' (the JWT) — not 'cf_token' (room session).
- * getStats / getHistory are imported from api.js and internally use 'token'.
- * All DOM access and listener wiring happens inside DOMContentLoaded.
+ * Reads 'token' and 'handle' from localStorage (persistent across tabs/sessions).
+ * 'cf_token' remains in sessionStorage and is cleared separately on logout.
  */
 
 import { getStats, getHistory } from './api.js';
@@ -11,7 +10,7 @@ import { getStats, getHistory } from './api.js';
 document.addEventListener('DOMContentLoaded', async () => {
 
   // ── 1. Auth guard ───────────────────────────────────────────────────────────
-  // 'token' is the JWT set by login/register — if missing, user isn't logged in
+  // JWT lives in localStorage — survives tab/browser close for up to 5 days
   const token  = localStorage.getItem('token');
   const handle = localStorage.getItem('handle');
 
@@ -25,7 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ── 2. Button listeners ─────────────────────────────────────────────────────
 
   document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.clear();
+    // Clear both storages on explicit logout
+    localStorage.removeItem('token');
+    localStorage.removeItem('handle');
+    sessionStorage.clear(); // clears cf_token and anything else
     window.location.href = 'index.html';
   });
 
