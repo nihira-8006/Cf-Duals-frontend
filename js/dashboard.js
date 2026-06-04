@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ── 1. Auth guard ───────────────────────────────────────────────────────────
   // 'token' is the JWT set by login/register — if missing, user isn't logged in
-  const token  = sessionStorage.getItem('token');
-  const handle = sessionStorage.getItem('handle');
+  const token  = localStorage.getItem('token');
+  const handle = localStorage.getItem('handle');
 
   if (!token) {
     window.location.href = 'index.html';
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ── 2. Button listeners ─────────────────────────────────────────────────────
 
   document.getElementById('logout-btn').addEventListener('click', () => {
-    sessionStorage.clear();
+    localStorage.clear();
     window.location.href = 'index.html';
   });
 

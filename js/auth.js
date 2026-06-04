@@ -34,8 +34,8 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
         }
 
         // The most critical part: Saving the security token!
-        sessionStorage.setItem('token', response.token);
-        sessionStorage.setItem('handle', response.handle);
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('handle', response.handle);
 
         // Redirect to the new dashboard
         window.location.href = 'dashboard.html';

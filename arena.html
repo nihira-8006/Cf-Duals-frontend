@@ -560,9 +560,9 @@
     const params   = new URLSearchParams(location.search);
     const roomId   = params.get('roomId');
     const roomCode = params.get('code');
-    const handle   = sessionStorage.getItem('cf_handle');
-    const isHost   = sessionStorage.getItem('cf_is_host') === 'true';
-    const rating   = Number(sessionStorage.getItem('cf_rating')) || 1200;
+    const handle   = localStorage.getItem('cf_handle');
+    const isHost   = localStorage.getItem('cf_is_host') === 'true';
+    const rating   = Number(localStorage.getItem('cf_rating')) || 1200;
 
     // Guard: if essential session data is missing, bail out
     if (!roomId || !handle) {

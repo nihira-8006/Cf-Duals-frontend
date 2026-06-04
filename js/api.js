@@ -16,7 +16,7 @@ const BASE_URL = 'https://cf-duals-backend-1.onrender.com/api';
 /** Auth requests — attaches the user JWT ('token') */
 async function authRequest(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -33,7 +33,7 @@ async function authRequest(method, path, body = null) {
 /** Room requests — attaches the room session token ('cf_token') */
 async function roomRequest(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json' };
-  const token = sessionStorage.getItem('cf_token');
+  const token = localStorage.getItem('cf_token');
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -57,8 +57,8 @@ async function roomRequest(method, path, body = null) {
 export async function register(handle, password) {
   const data = await authRequest('POST', '/auth/register', { handle, password });
   if (data.token) {
-    sessionStorage.setItem('token', data.token);
-    sessionStorage.setItem('handle', handle);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('handle', handle);
   }
   return data;
 }
@@ -71,8 +71,8 @@ export async function register(handle, password) {
 export async function login(handle, password) {
   const data = await authRequest('POST', '/auth/login', { handle, password });
   if (data.token) {
-    sessionStorage.setItem('token', data.token);
-    sessionStorage.setItem('handle', handle);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('handle', handle);
   }
   return data;
 }

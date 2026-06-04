@@ -517,8 +517,8 @@
         const { roomId, participants } = await joinRoom({ handle, roomCode });
 
         // Store session data — challenger is NOT the host
-        sessionStorage.setItem('cf_handle',   handle);
-        sessionStorage.setItem('cf_is_host',  'false');
+        localStorage.setItem('cf_handle',   handle);
+        localStorage.setItem('cf_is_host',  'false');
 
         // Derive opponent handle from participants array
         // participants = [{ id, handle }, { id, handle }]
@@ -527,7 +527,7 @@
         );
 
         if (opponent) {
-          sessionStorage.setItem('cf_opponent', opponent.handle);
+          localStorage.setItem('cf_opponent', opponent.handle);
         }
 
         // Redirect — roomCode passed so arena can call getRoom(roomCode)
