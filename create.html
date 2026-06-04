@@ -392,13 +392,7 @@
 </head>
 <body>
 
-  <script>handleEl.value = localStorage.getItem('handle') || '';
-    console.log("heyyy");
 
-
-
-        handleEl.readOnly = true;
-</script>
 
   <div class="grid-bg"></div>
 
@@ -426,15 +420,8 @@
           <!-- Handle -->
           <div class="field-group">
             <label for="handle" class="field-label">Codeforces Handle</label>
-            <input
-              id="handle"
-              name="handle"
-              type="text"
-              class="field-input"
-              placeholder="e.g. tourist"
-              autocomplete="off"
-              spellcheck="false"
-            />
+            <p id="handle_display"> </p>
+
             <div id="handle-error" class="field-error">Enter a valid Codeforces handle.</div>
             <div class="field-hint"># Your public CF username — used to verify submissions.</div>
           </div>
@@ -515,6 +502,12 @@
     const handleErr = document.getElementById('handle-error');
     const submitBtn = document.getElementById('submit-btn');
     const errBanner = document.getElementById('error-banner');
+
+    const handle_display=document.getElementById('handle_display');
+
+
+    const aa= await localStorage.getItem('handle');
+    handle_display.textContent=aa;
 
     // ── Helpers ────────────────────────────────────────────────
     const setLoading = (on) => {
