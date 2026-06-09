@@ -352,16 +352,7 @@
 
           <!-- Handle -->
           <div class="field-group">
-            <label for="handle" class="field-label">Your Codeforces Handle</label>
-            <input
-              id="handle"
-              name="handle"
-              type="text"
-              class="field-input"
-              placeholder="e.g. tourist"
-              autocomplete="off"
-              spellcheck="false"
-            />
+            <p id="handle_display" class="field-label"> </p>           
             <div id="handle-error" class="field-error">Enter a valid Codeforces handle.</div>
             <div class="field-hint"># Must match your public CF username exactly.</div>
           </div>
@@ -420,6 +411,8 @@
     const codeCount  = document.getElementById('code-count');
     const submitBtn  = document.getElementById('submit-btn');
     const errBanner  = document.getElementById('error-banner');
+     const handle_display=document.getElementById('handle_display');
+     handle_display.textContent=handleEl;
 
     // ── Helpers ──────────────────────────────────────────
     const setLoading = (on) => {
