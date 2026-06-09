@@ -534,18 +534,18 @@
       e.preventDefault();
       hideBanner();
 
-      console.log(handleEl.value);
-      // const handle = handleEl.value.trim();
-      // console.log(handleEl);
-      // const rating = Number(form.querySelector('input[name="rating"]:checked').value);
+      console.log(handleEl);
+      const handle = handleEl.trim();
+      console.log(handle);
+      const rating = Number(form.querySelector('input[name="rating"]:checked').value);
 
-      // // Client-side validation
-      // if (!validateHandle(handle)) {
-      //   handleEl.classList.add('error');
-      //   handleErr.classList.add('visible');
-      //   handleEl.focus();
-      //   return;
-      // }
+      // Client-side validation
+      if (!validateHandle(handle)) {
+        handleEl.classList.add('error');
+        handleErr.classList.add('visible');
+        handleEl.focus();
+        return;
+      }
 
       // setLoading(true);
 
