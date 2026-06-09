@@ -535,37 +535,37 @@
       hideBanner();
 
       console.log(handleEl);
-      const handle = handleEl.value.trim();
-      console.log(handleEl);
-      const rating = Number(form.querySelector('input[name="rating"]:checked').value);
+      // const handle = handleEl.value.trim();
+      // console.log(handleEl);
+      // const rating = Number(form.querySelector('input[name="rating"]:checked').value);
 
-      // Client-side validation
-      if (!validateHandle(handle)) {
-        handleEl.classList.add('error');
-        handleErr.classList.add('visible');
-        handleEl.focus();
-        return;
-      }
+      // // Client-side validation
+      // if (!validateHandle(handle)) {
+      //   handleEl.classList.add('error');
+      //   handleErr.classList.add('visible');
+      //   handleEl.focus();
+      //   return;
+      // }
 
-      setLoading(true);
+      // setLoading(true);
 
-      try {
-        // POST /api/rooms/create → { roomId, roomCode, token }
-        const { roomId, roomCode } = await createRoom({ handle, rating }); // token stored inside createRoom()
+      // try {
+      //   // POST /api/rooms/create → { roomId, roomCode, token }
+      //   const { roomId, roomCode } = await createRoom({ handle, rating }); // token stored inside createRoom()
 
-        // Store token securely in localStorage (never in URL)
+      //   // Store token securely in localStorage (never in URL)
         
-        localStorage.setItem('cf_handle', handle);
-        localStorage.setItem('cf_is_host', 'true');
-        localStorage.setItem('cf_rating', String(rating));
+      //   localStorage.setItem('cf_handle', handle);
+      //   localStorage.setItem('cf_is_host', 'true');
+      //   localStorage.setItem('cf_rating', String(rating));
 
-        // Redirect — NO host=true flag, server owns that
-        window.location.href = `/arena.html?roomId=${roomId}&code=${roomCode}`;
+      //   // Redirect — NO host=true flag, server owns that
+      //   window.location.href = `/arena.html?roomId=${roomId}&code=${roomCode}`;
 
-      } catch (err) {
-        showBanner(err.message || 'Failed to create room. Please try again.');
-        setLoading(false);
-      }
+      // } catch (err) {
+      //   showBanner(err.message || 'Failed to create room. Please try again.');
+      //   setLoading(false);
+      // }
     });
   </script>
 
