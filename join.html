@@ -413,7 +413,7 @@
     import { joinRoom } from '/js/api.js';
 
     const form       = document.getElementById('join-form');
-    const handleEl   = document.getElementById('handle');
+    const handleEl  = localStorage.getItem('handle');
     const handleErr  = document.getElementById('handle-error');
     const codeEl     = document.getElementById('room-code');
     const codeErr    = document.getElementById('code-error');
@@ -484,7 +484,7 @@
       e.preventDefault();
       hideBanner();
 
-      const handle   = handleEl.value.trim();
+      const handle   = handleEl.trim();
       const roomCode = codeEl.value.trim();
 
       // Client-side validation — check both fields before any fetch
