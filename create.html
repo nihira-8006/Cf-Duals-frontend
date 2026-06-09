@@ -533,10 +533,10 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideBanner();
-      
-      console(handleEl);
+
+      console.log(handleEl);
       const handle = handleEl.value.trim();
-      console(handleEl);
+      console.log(handleEl);
       const rating = Number(form.querySelector('input[name="rating"]:checked').value);
 
       // Client-side validation
