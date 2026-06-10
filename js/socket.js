@@ -29,7 +29,10 @@ export function initSocket({
   onOpponentJoined = () => {},
   onDuelStarted    = () => {},
   onDuelEnded      = () => {},
+  onDrawOffered = () => {},
+  onDrawDeclined = () => {},
   onError          = () => {},
+  
 }) {
   if (!roomId || !handle) {
     onError('Cannot connect: roomId or handle is missing.');
@@ -96,6 +99,17 @@ export function initSocket({
     onDuelStarted(data);
   });
 
+
+  socket.on('draw_offered', (data) => {
+    console.log('[socket] draw_offered:', data);
+    onDrawOffered(data);
+});
+
+socket.on('draw_declined', (data) => {
+    console.log('[socket] draw_declined:', data);
+    onDrawDeclined(data);
+});
+
   /**
    * duel_ended: fires when a player solves the problem.
    * Payload: { winner: string, loser: string, message: string, problemId: string, timeTaken?: number }
@@ -124,4 +138,14 @@ export function emitStartDuel({ roomId, handle1, handle2, targetRating }) {
   const payload = { roomId, handle1, handle2, targetRating };
   console.log('[socket] Emitting start_duel:', payload);
   socket.emit('start_duel', payload);
+}
+
+
+
+export function offerdraw(roomId, handle){
+  socket.emit('offer_draw', { 
+        roomId: roomId, 
+        sender: handle
+    })
+
 }

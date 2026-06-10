@@ -565,7 +565,8 @@
   <script type="module">
     import { initSocket } from '/js/socket.js';
     import { getRoom } from '/js/api.js';
-
+    import { offerDraw } from '/js/socket.js';
+    
     // ── 1. Parse URL & session ────────────────────────────
     const params   = new URLSearchParams(location.search);
     const roomId   = params.get('roomId');
@@ -662,16 +663,13 @@ document.getElementById('offer-draw-btn').addEventListener('click', () => {
     document.getElementById('offer-draw-btn').disabled = true; 
     document.getElementById('offer-draw-btn').innerText = "Offer Sent...";
 
-    socket.emit('offer_draw', { 
-        roomId: currentRoomId, 
-        sender: myHandle 
-    });
+    offerdraw(roomId, handle);
 });
 
 // 2. You RECEIVE a draw offer from the opponent
 socket.on('draw_offered', (data) => {
     // Don't show the panel to the person who sent the offer!
-    if (data.sender !== myHandle) {
+    if (data.sender !== handle) {
         document.getElementById('draw-challenger').innerText = data.sender;
         document.getElementById('draw-offer-panel').style.display = 'block';
     }
@@ -682,7 +680,7 @@ document.getElementById('accept-draw-btn').addEventListener('click', () => {
     document.getElementById('draw-offer-panel').style.display = 'none';
     socket.emit('accept_draw', { 
         roomId: currentRoomId, 
-        player1: myHandle, 
+        player1: handle, 
         player2: opponentHandle,
         problem: currentProblem,
         startTimeMs: duelStartTime
@@ -693,13 +691,13 @@ document.getElementById('decline-draw-btn').addEventListener('click', () => {
     document.getElementById('draw-offer-panel').style.display = 'none';
     socket.emit('decline_draw', { 
         roomId: currentRoomId, 
-        sender: myHandle 
+        sender: handle 
     });
 });
 
 // 4. Your opponent declined YOUR offer
 socket.on('draw_declined', (data) => {
-    if (data.sender !== myHandle) {
+    if (data.sender !== handle) {
         // Re-enable the button and tell the user
         const drawBtn = document.getElementById('offer-draw-btn');
         drawBtn.disabled = false;
@@ -776,6 +774,16 @@ socket.on('draw_declined', (data) => {
       onError(msg) {
         showPhase('E', msg);
       },
+        onDrawOffered(data) {
+        document.getElementById('draw-challenger').innerText = data.sender;
+        document.getElementById('draw-offer-panel').style.display = 'block';
+    },
+
+    onDrawDeclined(data) {
+        const drawBtn = document.getElementById('offer-draw-btn');
+        drawBtn.disabled = false;
+        drawBtn.innerText = '🤝 Offer Draw';
+    }
     });
 
     // ── 11. Start button (host only) ─────────────────────
