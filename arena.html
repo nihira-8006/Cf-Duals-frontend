@@ -518,6 +518,16 @@
         <a id="c-cf-link" href="#" target="_blank" rel="noopener" class="btn-solve">
           Solve on Codeforces ↗
         </a>
+
+        <button id="offer-draw-btn" style="display: none; background-color: #2196F3; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    🤝 Offer Draw
+</button>
+
+<div id="draw-offer-panel" style="display: none; background: #333; padding: 15px; margin-top: 15px; border-radius: 8px; border: 2px solid #2196F3;">
+    <p><strong><span id="draw-challenger">Opponent</span></strong> has offered a draw. Do you accept?</p>
+    <button id="accept-draw-btn" style="background-color: #4CAF50; color: white; padding: 5px 15px;">Accept</button>
+    <button id="decline-draw-btn" style="background-color: #f44336; color: white; padding: 5px 15px;">Decline</button>
+</div>
       </div>
 
       <div class="live-timer">Elapsed: <span id="c-timer">00:00</span></div>
@@ -644,6 +654,59 @@
         const ss = String(elapsed % 60).padStart(2, '0');
         document.getElementById('c-timer').textContent = `${mm}:${ss}`;
       }, 1000);
+
+
+      // 1. You click "Offer Draw"
+document.getElementById('offer-draw-btn').addEventListener('click', () => {
+    // Disable the button so you can't spam them with offers
+    document.getElementById('offer-draw-btn').disabled = true; 
+    document.getElementById('offer-draw-btn').innerText = "Offer Sent...";
+
+    socket.emit('offer_draw', { 
+        roomId: currentRoomId, 
+        sender: myHandle 
+    });
+});
+
+// 2. You RECEIVE a draw offer from the opponent
+socket.on('draw_offered', (data) => {
+    // Don't show the panel to the person who sent the offer!
+    if (data.sender !== myHandle) {
+        document.getElementById('draw-challenger').innerText = data.sender;
+        document.getElementById('draw-offer-panel').style.display = 'block';
+    }
+});
+
+// 3. You Accept or Decline the offer
+document.getElementById('accept-draw-btn').addEventListener('click', () => {
+    document.getElementById('draw-offer-panel').style.display = 'none';
+    socket.emit('accept_draw', { 
+        roomId: currentRoomId, 
+        player1: myHandle, 
+        player2: opponentHandle,
+        problem: currentProblem,
+        startTimeMs: duelStartTime
+    });
+});
+
+document.getElementById('decline-draw-btn').addEventListener('click', () => {
+    document.getElementById('draw-offer-panel').style.display = 'none';
+    socket.emit('decline_draw', { 
+        roomId: currentRoomId, 
+        sender: myHandle 
+    });
+});
+
+// 4. Your opponent declined YOUR offer
+socket.on('draw_declined', (data) => {
+    if (data.sender !== myHandle) {
+        // Re-enable the button and tell the user
+        const drawBtn = document.getElementById('offer-draw-btn');
+        drawBtn.disabled = false;
+        drawBtn.innerText = "🤝 Offer Draw";
+        alert(`${data.sender} declined the draw. Keep coding!`);
+    }
+});
     }
 
     // ── 8. Phase D setup ─────────────────────────────────
