@@ -672,13 +672,6 @@ document.getElementById('offer-draw-btn').addEventListener('click', () => {
 });
 
 // 2. You RECEIVE a draw offer from the opponent
-socket.on('draw_offered', (data) => {
-    // Don't show the panel to the person who sent the offer!
-    if (data.sender !== handle) {
-        document.getElementById('draw-challenger').innerText = data.sender;
-        document.getElementById('draw-offer-panel').style.display = 'block';
-    }
-});
 
 // 3. You Accept or Decline the offer
 document.getElementById('accept-draw-btn').addEventListener('click', () => {
@@ -704,16 +697,7 @@ document.getElementById('decline-draw-btn').addEventListener('click', () => {
     });
 });
 
-// 4. Your opponent declined YOUR offer
-socket.on('draw_declined', (data) => {
-    if (data.sender !== handle) {
-        // Re-enable the button and tell the user
-        const drawBtn = document.getElementById('offer-draw-btn');
-        drawBtn.disabled = false;
-        drawBtn.innerText = "🤝 Offer Draw";
-        alert(`${data.sender} declined the draw. Keep coding!`);
-    }
-});
+
     }
 
     // ── 8. Phase D setup ─────────────────────────────────
