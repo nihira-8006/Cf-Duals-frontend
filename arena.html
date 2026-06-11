@@ -682,6 +682,8 @@ socket.on('draw_offered', (data) => {
 
 // 3. You Accept or Decline the offer
 document.getElementById('accept-draw-btn').addEventListener('click', () => {
+
+  console.log('trying to accept draw');
     document.getElementById('draw-offer-panel').style.display = 'none';
 
     emitAcceptDraw({
