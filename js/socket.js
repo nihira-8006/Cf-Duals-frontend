@@ -161,4 +161,3 @@ export function emitDeclineDraw(data) {
   socket.emit('decline_draw', data);
 }
 
-return { emitStartDuel, offerdraw, emitAcceptDraw, emitDeclineDraw };
