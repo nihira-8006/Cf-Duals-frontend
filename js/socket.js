@@ -120,7 +120,7 @@ socket.on('draw_declined', (data) => {
   });
 
   // ── Return public emitters ────────────────────────────
-  return { emitStartDuel };
+
 }
 
 // ── Public: start the duel (host only) ───────────────────────────────────────
@@ -160,3 +160,5 @@ export function emitDeclineDraw(data) {
   if (!socket?.connected) return;
   socket.emit('decline_draw', data);
 }
+
+return { emitStartDuel, offerdraw, emitAcceptDraw, emitDeclineDraw };
