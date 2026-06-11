@@ -566,7 +566,10 @@
     import { initSocket } from '/js/socket.js';
     import { getRoom } from '/js/api.js';
     import { offerdraw } from '/js/socket.js';
-    
+    import {
+   emitAcceptDraw,
+  emitDeclineDraw
+} from '/js/socket.js';
     // ── 1. Parse URL & session ────────────────────────────
     const params   = new URLSearchParams(location.search);
     const roomId   = params.get('roomId');
@@ -574,6 +577,8 @@
     const handle   = localStorage.getItem('cf_handle');
     const isHost   = localStorage.getItem('cf_is_host') === 'true';
     const rating   = Number(localStorage.getItem('cf_rating')) || 1200;
+
+
 
     // Guard: if essential session data is missing, bail out
     if (!roomId || !handle) {
@@ -678,20 +683,22 @@ socket.on('draw_offered', (data) => {
 // 3. You Accept or Decline the offer
 document.getElementById('accept-draw-btn').addEventListener('click', () => {
     document.getElementById('draw-offer-panel').style.display = 'none';
-    socket.emit('accept_draw', { 
-        roomId: currentRoomId, 
-        player1: handle, 
+
+    emitAcceptDraw({
+        roomId,
+        player1: handle,
         player2: opponentHandle,
-        problem: currentProblem,
-        startTimeMs: duelStartTime
+        problem: problem,
+        startTimeMs: startMs
     });
 });
 
 document.getElementById('decline-draw-btn').addEventListener('click', () => {
     document.getElementById('draw-offer-panel').style.display = 'none';
-    socket.emit('decline_draw', { 
-        roomId: currentRoomId, 
-        sender: handle 
+
+    emitDeclineDraw({
+        roomId,
+        sender: handle
     });
 });
 

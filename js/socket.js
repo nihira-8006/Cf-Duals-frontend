@@ -149,3 +149,14 @@ export function offerdraw(roomId, handle){
     })
 
 }
+
+
+export function emitAcceptDraw(data) {
+  if (!socket?.connected) return;
+  socket.emit('accept_draw', data);
+}
+
+export function emitDeclineDraw(data) {
+  if (!socket?.connected) return;
+  socket.emit('decline_draw', data);
+}
