@@ -71,11 +71,12 @@ export async function register(handle, password) {
  * Stores JWT in localStorage for persistence across sessions.
  */
 export async function login(handle, password) {
-  const data = await authRequest('POST', '/auth/login', { handle, password });
+  
+{  const data = await authRequest('POST', '/auth/login', { handle, password });
   if (data.token) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('handle', handle);
-  }
+  }}
   return data;
 }
 

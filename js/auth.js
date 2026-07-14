@@ -42,7 +42,8 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.log('REAL ERROR:', error);
-        errorEl.innerText = 'Failed to connect to the server.';
+        if(error==401)
+        errorEl.innerText = 'Invalid username or password';
         errorEl.style.display = 'block';
     }
 });
