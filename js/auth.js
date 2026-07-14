@@ -42,8 +42,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.log('REAL ERROR:', error);
-        if(error.status===401)
-        errorEl.innerText = 'Invalid username or password';
+        errorEl.innerText = error;
         errorEl.style.display = 'block';
     }
 });
